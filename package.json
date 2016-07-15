@@ -1,0 +1,20 @@
+{
+  "name": "park",
+  "version": "1.0.0",
+  "description": "a parking system\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[walc\u001b[2~h parking system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {},
+  "dependencies": {
+    "bower": "^1.7.9",
+    "gulp-browserify": "^0.5.1"
+  },
+  "devDependencies": {
+    "bowserify": "^10.2.1",
+    "gulp": "^3.9.1"
+  }
+}
