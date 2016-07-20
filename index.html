@@ -7,23 +7,24 @@
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<style>
 	#parking{width: 100%;padding:5px;}
+	.parking-table{margin-top:20px;}
+	#parkingTable th,td,thead{text-align: center;}
+	#parkingTable thead>tr>th{border:none;}
+	#parkingTable>tbody>tr>th:nth-child(6),#parkingTable>tbody>tr>td:nth-child(6){border-right:1px solid #d9534f;}
+	#parkingTable>tbody>tr>th:nth-child(17),#parkingTable>tbody>tr>td:nth-child(17){border-right:1px solid #337AB7;}
+	/*#parkingTable tbody>tr>td:hover{background: rgba(0,250,250,.7);}
+	.car-form{width:100%;}*/
+	#parkingTable tbody>tr>td{transition:all .2s ease;border-radius: 0%}
+	#parkingTable tbody>tr>td:hover{border-radius: 2%}
+
+	td.isSelected{background: rgba(209, 209, 209, 0.52);cursor: not-allowed;}
+	td.isSelecting{background: rgba(0, 133, 195, 0.9);cursor: pointer;}
+	td.isBanSelect{background: rgba(195, 0, 0, 0.9);cursor: not-allowed;}
 	</style>
 </head>
 <body>
-	<div id="parking" class="">
-		<div class="row">
-			<div class="col-md-12">
-				<form class="row car-form">
-					<div class="col-md-4">
-						<div class="form-group">
-							<label for="exampleInputEmail1">Email address</label>
-							<input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
-						</div>
-					</div>
-					<div class="col-md-12"></div>
-				</form>
-			</div>
-		</div>
+	<div id="app" class="">
 	</div>
+	<script src="dist/js/main.js"></script> 
 </body>
 </html>

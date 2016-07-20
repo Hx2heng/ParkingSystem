@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>车位预定系统</title>
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+	<style>
+	#parking{width: 100%;padding:5px;}
+	.parking-table{margin-top:20px;}
+	#parkingTable th,td,thead{text-align: center;}
+	#parkingTable thead>tr>th{border:none;}
+	#parkingTable>tbody>tr>th:nth-child(6),#parkingTable>tbody>tr>td:nth-child(6){border-right:1px solid #d9534f;}
+	#parkingTable>tbody>tr>th:nth-child(17),#parkingTable>tbody>tr>td:nth-child(17){border-right:1px solid #337AB7;}
+	#parkingTable tbody>tr>td:hover{background: rgba(0,250,250,.7);}
+	</style>
+</head>
+<body>
+	<div id="parking" class="">
+		<div class="row">
+			<div class="col-md-12">
+				<form class="row car-form">
+					<div class="col-md-4">
+						<div class="form-group">
+							<label for="carId">车牌号</label>
+							<input type="text" class="form-control" id="carId" placeholder="车牌号">
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label for="carType">车类型</label>
+							<select class="form-control" id="carType">
+							  <option></option>
+							  <option>1</option>
+							  <option>2</option>
+							  <option>3</option>
+							  <option>4</option>
+							  <option>5</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label for="date">预约日期</label>
+							<input type="date" class="form-control" id="carDate">
+						</div>
+						<button type="button" class="btn btn-primary btn-lg btn-block">预定车位</button>
+					</div>
+					<div class="col-md-12 parking-table">
+						<div class="table-responsive" >
+						  <table class="table table-bordered" id="parkingTable">
+						  	<thead>
+						  		<tr>
+						    		<th colspan="17">预约日期：2016/07/23</th>
+						    		<th colspan="2">第二天</th>
+						    	</tr>
+					    	</thead>
+						  	<tbody>
+						    	<tr>
+						    		<th></th>
+						    		<th>8:00</th>
+						    		<th>9:00</th>
+						    		<th>10:00</th>
+						    		<th>11:00</th>
+						    		<th>12:00</th>
+						    		<th>14:00</th>
+						    		<th>15:00</th>
+						    		<th>16:00</th>
+						    		<th>17:00</th>
+						    		<th>18:00</th>
+						    		<th>19:00</th>
+						    		<th>20:00</th>
+						    		<th>21:00</th>
+						    		<th>22:00</th>
+						    		<th>23:00</th>
+						    		<th>00:00</th>
+						    		<th>01:00</th>
+						    		<th>02:00</th>
+						    	</tr>
+						    	<tr>
+						    		<th>车位1</th>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    	</tr>
+						    	<tr>
+						    		<th>车位2</th>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    	</tr>
+						    	<tr>
+						    		<th>车位3</th>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    	</tr>
+						    	<tr>
+						    		<th>车位4</th>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    		<td></td>
+						    	</tr>
+					    	</tbody>
+						  </table>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+</body>
+</html>
