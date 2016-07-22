@@ -8,25 +8,38 @@ module.exports = React.createClass({
 	    };
 	},
 	componentWillReceiveProps :function(nextProps){
-		var isSelecteds = nextProps.parkTimes;
+		var isSelecteds = nextProps.parkedTimes;
 		var carType = nextProps.carType;
 		this.setState({
 			isSelecteds:isSelecteds,
 			carType:carType
 		});
 	},
+	componentWillMount:function(){
+		var isSelecteds = this.props.parkedTimes;
+		var carType = this.props.carType;
+		this.setState({
+			isSelecteds:isSelecteds,
+			carType:carType
+		});
+	},
+	componentDidMount:function(){
+		this.setIsSelected(this.state.isSelecteds);
+	},
 	setIsSelected:function(cells){
+		
 		for(var i=0;i<cells.length;i++){
 			$(this.refs.items).find('td').eq(cells[i]-1).addClass('isSelected');
 		} 
 	},
-	mouseMove:function(e){
-		this.setSelectingCell(e,this.state.carType);
+	empty:function(){},
+	mouseMove:function(i,e){
+		this.setSelectingCell(e,this.state.carType,i);
 	},
-	setSelectingCell:function(e,carType){
+	setSelectingCell:function(e,carType,i){
 		var $this = this;
 		var td = e.target;
-		var id = $(td).attr('data-id')-0;
+		var id = i;
 		var cells = $(this.refs.items).find('td');
 
 		cells.removeClass('isSelecting');
@@ -67,10 +80,10 @@ module.exports = React.createClass({
 		var td = e.target;
 		$(this.refs.items).find('td').removeClass('isSelecting isBanSelect');
 	},
-	mouseClick:function(e){
+	mouseClick:function(i,e){
 		e.stopPropagation();
 		var td = e.target;
-		var id = $(td).attr('data-id')-0;
+		var id = i;
 		var carType = this.state.carType;
 		if((id+carType-1)>18){//超过第二天2小时
 			alert('超过第二天2小时');
@@ -83,15 +96,23 @@ module.exports = React.createClass({
 		else{//可以
 			var newOrder={};
 			newOrder.date = this.props.nowOrder.date;
-			newOrder.carId = this.props.carId;
-			newOrder.parkTimes = [];
+			newOrder.parkingSpaceId = this.props.parkingSpaceId;
+			newOrder.parkedTimes = [];
 			for(var i=0;i<carType;i++){
-				newOrder.parkTimes.push(id+i);
+				newOrder.parkedTimes.push(id+i);
 			}
-			var r=confirm("确定预约此段时间吗？(时间："+newOrder.date+"车位："+newOrder.carId+"时间段："+newOrder.parkTimes);
+			var r=confirm("确定预约此段时间吗？(时间："+newOrder.date+"车位："+newOrder.parkingSpaceId+"时间段："+newOrder.parkedTimes);
 			if (r==true)
 			{
-			  console.log("You pressed OK!")
+			  console.log("You pressed OK!",newOrder)
+			  // $.ajax({
+			  // 	url:'',
+			  // 	type:'post',
+			  // 	data:JSON.stringify(newOrder),
+			  // 	success:function(res){
+			  // 		alert('成功');
+			  // 	}
+			  // })
 			}
 			else
 			{
@@ -112,19 +133,21 @@ module.exports = React.createClass({
 	render:function(){
 		var cells = [];
 		for(var i=1;i<19;i++){
-			if(this.isOneOfArray(i,this.state.isSelecteds)){
-				cells.push(<ParkingCell key={i} cellId={i} mouseClick={this.mouseClick} isSelected={true}/>);
-			}
-			else{
-				cells.push(<ParkingCell key={i} cellId={i} mouseClick={this.mouseClick} mouseMove={this.mouseMove} mouseLeave={this.mouseLeave} isSelected={false}/>);
-			}
+			cells.push(i);
 		}
-		this.setIsSelected(this.state.isSelecteds);
-
 		return (
 			<tr ref="items">
-				<th>车位{this.props.carId}</th>
-				{cells}
+				<th>车位{this.props.parkingSpaceId}</th>
+				{
+					cells.map(function(item,i){
+						if(this.isOneOfArray((i+1),this.state.isSelecteds)){
+							return (<ParkingCell key={i}/>);
+						}
+						else{
+							return (<ParkingCell key={i} onClick={this.mouseClick.bind(this,i+1)} onMouseMove={this.mouseMove.bind(this,i+1)} onMouseLeave={this.mouseLeave} />);
+						}	
+					},this)
+				}
 			</tr>
 			)
 	}

@@ -6,14 +6,15 @@ module.exports = React.createClass({
 			<div className = "row">
 				<div className="col-md-4 col-sm-4">
 					<div className="form-group">
-						<label htmlFor="carId">车牌号</label>
-						<input onChange={this.props.destineBtnClick} ref="carId" type="text" className="form-control" id="carId" placeholder="车牌号" />
+						<label htmlFor="parkingSpaceId">车牌号</label>
+						<input onChange={this.props.destineBtnClick} ref="parkingSpaceId" type="text" className="form-control" id="parkingSpaceId" placeholder="车牌号" />
 					</div>
 				</div>
 				<div className="col-md-4 col-sm-4">
 					<div className="form-group">
 						<label htmlFor="carType">车类型</label>
 						<select className="form-control" id="carType" ref="carType" onChange={this.props.destineBtnClick}>
+						  <option value=''></option>
 						  <option value='1'>1</option>
 						  <option value='2'>2</option>
 						  <option value='3'>3</option>

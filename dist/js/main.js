@@ -7,14 +7,15 @@ module.exports = React.createClass({displayName: "exports",
 			React.createElement("div", {className: "row"}, 
 				React.createElement("div", {className: "col-md-4 col-sm-4"}, 
 					React.createElement("div", {className: "form-group"}, 
-						React.createElement("label", {htmlFor: "carId"}, "车牌号"), 
-						React.createElement("input", {onChange: this.props.destineBtnClick, ref: "carId", type: "text", className: "form-control", id: "carId", placeholder: "车牌号"})
+						React.createElement("label", {htmlFor: "parkingSpaceId"}, "车牌号"), 
+						React.createElement("input", {onChange: this.props.destineBtnClick, ref: "parkingSpaceId", type: "text", className: "form-control", id: "parkingSpaceId", placeholder: "车牌号"})
 					)
 				), 
 				React.createElement("div", {className: "col-md-4 col-sm-4"}, 
 					React.createElement("div", {className: "form-group"}, 
 						React.createElement("label", {htmlFor: "carType"}, "车类型"), 
 						React.createElement("select", {className: "form-control", id: "carType", ref: "carType", onChange: this.props.destineBtnClick}, 
+						  React.createElement("option", {value: ""}), 
 						  React.createElement("option", {value: "1"}, "1"), 
 						  React.createElement("option", {value: "2"}, "2"), 
 						  React.createElement("option", {value: "3"}, "3")
@@ -40,8 +41,10 @@ var React = require('react');
 module.exports=React.createClass({displayName: "exports",
 	render:function(){
 		return (
-			React.createElement("td", {onMouseLeave: this.props.mouseLeave, onMouseMove: this.props.mouseMove, onClick: this.props.mouseClick, "data-id": this.props.cellId}
-				
+			React.createElement("td", {
+			onMouseMove: this.props.onMouseMove, 
+			onMouseLeave: this.props.onMouseLeave, 
+			onClick: this.props.onClick}
 			)
 			)
 	}
@@ -55,72 +58,87 @@ module.exports = React.createClass({displayName: "exports",
 	getInitialState:function(){
 		return {
 			isTableShow:false,
-			carType:1,
 			nowOrder:{},//当前选择日期（天）的车位预定数据
 		}
 	},
 	componentDidMount:function(){
-		var $this = this;
-		var initNowOrder={
-			date:'2016/1/31',
-			parked:[
-				{carId:1,parkTimes:[1,2,6,7,8,12],banTimes:[9,10]},
-				{carId:2,parkTimes:[]},
-				{carId:3,parkTimes:[1,2]},
-				{carId:4,parkTimes:[3,4,8,12,13,14]},
-				{carId:5,parkTimes:[2,6,12,13,17,18]},
-				]
-		};
-		setTimeout(function(){ 
-			$this.setState({
-				nowOrder:initNowOrder
-			})
-		},200);
+		// var $this = this;
+		// var initNowOrder={
+		// 	date:'2016/1/31',
+		// 	parkingSpaces:[
+		// 		{parkingSpaceId:1,parkedTimes:[1,2,6,7,8,12],banTimes:[9,10]},
+		// 		{parkingSpaceId:2,parkedTimes:[]},
+		// 		{parkingSpaceId:3,parkedTimes:[1,2]},
+		// 		{parkingSpaceId:4,parkedTimes:[3,4,8,12,13,14]},
+		// 		{parkingSpaceId:5,parkedTimes:[2,6,12,13,17,18]},
+		// 		]
+		// };
+		// setTimeout(function(){ 
+		// 	$this.setState({
+		// 		nowOrder:initNowOrder
+		// 	})
+		// },200);
 	},
 	destineBtnClick:function(){
 		var isOk = this.checkInputForm();
 		var $this = this ;
 		if(isOk){
+			console.log('加载中');
 			var date = this.refs.inputArea.refs.date.value,
-				carId = this.refs.inputArea.refs.carId.value,
-				carType = this.refs.inputArea.refs.carType.selectedIndex+1 ;
+				parkingSpaceId = this.refs.inputArea.refs.parkingSpaceId.value,
+				carType = this.refs.inputArea.refs.carType.selectedIndex ;
 				console.log('comp',date,carType);
-			var initNowOrder={
+			 // $.ajax({
+			  // 	url:'',
+			  // 	type:'post',
+			  // 	data:JSON.stringify(newOrder),
+			  // 	success:function(res){
+			  // 		alert('成功');
+			  // 	}
+			  // })
+			var newOrder={
 				date:date,
 				carType:carType,
-				parked:[
-					{carId:1,parkTimes:[1,2,6,7,8,12],banTimes:[9,10]},
-					{carId:2,parkTimes:[]},
-					{carId:3,parkTimes:[1,2]}
+				parkingSpaces:[
+					{parkingSpaceId:1,parkedTimes:[2,2,6,7,8,12],banTimes:[9,10]},
+					{parkingSpaceId:2,parkedTimes:[]},
+					{parkingSpaceId:3,parkedTimes:[1,2]},
+		 			{parkingSpaceId:4,parkedTimes:[3,4,8,12,13,14]},
+		 			{parkingSpaceId:5,parkedTimes:[2,6,12,13,17,18]},
 				]
 			};
-			console.log('加载中');
+
 			setTimeout(function(){
 				if(!$this.state.isTableShow){
 					$this.setState({
 						isTableShow:true,
 						carType:carType,
-						nowOrder:initNowOrder
+						nowOrder:newOrder
 					});
 				}
 				else{
 					$this.setState({
 						carType:carType,
-						nowOrder:initNowOrder
+						nowOrder:newOrder
 					});
 				}
-				
+				console.log('加载完成');
 			},200);
 		}
 		else{
 			console.log('请完善表单');
+			$this.setState({
+				isTableShow:false,
+				carType:0,
+				nowOrder:{}
+			});
 		}
 	},
 	checkInputForm:function(){
-		var carId = this.refs.inputArea.refs.carId.value,
+		var parkingSpaceId = this.refs.inputArea.refs.parkingSpaceId.value,
 			date = this.refs.inputArea.refs.date.value,
 			carType = this.refs.inputArea.refs.carType.selectedIndex ;
-		if(!carId||!carType||!date){
+		if(!parkingSpaceId||!carType||!date){
 			return false
 		}
 		else{
@@ -135,7 +153,7 @@ module.exports = React.createClass({displayName: "exports",
 						React.createElement("form", {className: "car-form"}, 
 							React.createElement(InputArea, {ref: "inputArea", destineBtnClick: this.destineBtnClick}), 
 
-							React.createElement(ParkingTable, {isShow: this.state.isTableShow, nowOrder: this.state.nowOrder, carType: this.state.carType})
+							React.createElement(ParkingTable, {isShow: this.state.isTableShow, nowOrder: this.state.nowOrder})
 						)
 					)
 				)
@@ -156,25 +174,38 @@ module.exports = React.createClass({displayName: "exports",
 	    };
 	},
 	componentWillReceiveProps :function(nextProps){
-		var isSelecteds = nextProps.parkTimes;
+		var isSelecteds = nextProps.parkedTimes;
 		var carType = nextProps.carType;
 		this.setState({
 			isSelecteds:isSelecteds,
 			carType:carType
 		});
 	},
+	componentWillMount:function(){
+		var isSelecteds = this.props.parkedTimes;
+		var carType = this.props.carType;
+		this.setState({
+			isSelecteds:isSelecteds,
+			carType:carType
+		});
+	},
+	componentDidMount:function(){
+		this.setIsSelected(this.state.isSelecteds);
+	},
 	setIsSelected:function(cells){
+		
 		for(var i=0;i<cells.length;i++){
 			$(this.refs.items).find('td').eq(cells[i]-1).addClass('isSelected');
 		} 
 	},
-	mouseMove:function(e){
-		this.setSelectingCell(e,this.state.carType);
+	empty:function(){},
+	mouseMove:function(i,e){
+		this.setSelectingCell(e,this.state.carType,i);
 	},
-	setSelectingCell:function(e,carType){
+	setSelectingCell:function(e,carType,i){
 		var $this = this;
 		var td = e.target;
-		var id = $(td).attr('data-id')-0;
+		var id = i;
 		var cells = $(this.refs.items).find('td');
 
 		cells.removeClass('isSelecting');
@@ -215,10 +246,10 @@ module.exports = React.createClass({displayName: "exports",
 		var td = e.target;
 		$(this.refs.items).find('td').removeClass('isSelecting isBanSelect');
 	},
-	mouseClick:function(e){
+	mouseClick:function(i,e){
 		e.stopPropagation();
 		var td = e.target;
-		var id = $(td).attr('data-id')-0;
+		var id = i;
 		var carType = this.state.carType;
 		if((id+carType-1)>18){//超过第二天2小时
 			alert('超过第二天2小时');
@@ -231,15 +262,23 @@ module.exports = React.createClass({displayName: "exports",
 		else{//可以
 			var newOrder={};
 			newOrder.date = this.props.nowOrder.date;
-			newOrder.carId = this.props.carId;
-			newOrder.parkTimes = [];
+			newOrder.parkingSpaceId = this.props.parkingSpaceId;
+			newOrder.parkedTimes = [];
 			for(var i=0;i<carType;i++){
-				newOrder.parkTimes.push(id+i);
+				newOrder.parkedTimes.push(id+i);
 			}
-			var r=confirm("确定预约此段时间吗？(时间："+newOrder.date+"车位："+newOrder.carId+"时间段："+newOrder.parkTimes);
+			var r=confirm("确定预约此段时间吗？(时间："+newOrder.date+"车位："+newOrder.parkingSpaceId+"时间段："+newOrder.parkedTimes);
 			if (r==true)
 			{
-			  console.log("You pressed OK!")
+			  console.log("You pressed OK!",newOrder)
+			  // $.ajax({
+			  // 	url:'',
+			  // 	type:'post',
+			  // 	data:JSON.stringify(newOrder),
+			  // 	success:function(res){
+			  // 		alert('成功');
+			  // 	}
+			  // })
 			}
 			else
 			{
@@ -260,19 +299,21 @@ module.exports = React.createClass({displayName: "exports",
 	render:function(){
 		var cells = [];
 		for(var i=1;i<19;i++){
-			if(this.isOneOfArray(i,this.state.isSelecteds)){
-				cells.push(React.createElement(ParkingCell, {key: i, cellId: i, mouseClick: this.mouseClick, isSelected: true}));
-			}
-			else{
-				cells.push(React.createElement(ParkingCell, {key: i, cellId: i, mouseClick: this.mouseClick, mouseMove: this.mouseMove, mouseLeave: this.mouseLeave, isSelected: false}));
-			}
+			cells.push(i);
 		}
-		this.setIsSelected(this.state.isSelecteds);
-
 		return (
 			React.createElement("tr", {ref: "items"}, 
-				React.createElement("th", null, "车位", this.props.carId), 
-				cells
+				React.createElement("th", null, "车位", this.props.parkingSpaceId), 
+				
+					cells.map(function(item,i){
+						if(this.isOneOfArray((i+1),this.state.isSelecteds)){
+							return (React.createElement(ParkingCell, {key: i}));
+						}
+						else{
+							return (React.createElement(ParkingCell, {key: i, onClick: this.mouseClick.bind(this,i+1), onMouseMove: this.mouseMove.bind(this,i+1), onMouseLeave: this.mouseLeave}));
+						}	
+					},this)
+				
 			)
 			)
 	}
@@ -285,6 +326,8 @@ var ParkingItem = require('./ParkingItem');
 module.exports = React.createClass({displayName: "exports",
 
 	render:function(){
+		//申请单
+		var nowOrder=this.props.nowOrder;
 		//是否显示
 		var styleObj ={
 			display:this.props.isShow?'block':'none',
@@ -296,14 +339,14 @@ module.exports = React.createClass({displayName: "exports",
 		      var m=d.getMonth()+1; 
 		      return d.getFullYear()+'/'+m+'/'+d.getDate(); 
 		    } 
-		var nextDay = addDate(this.props.nowOrder.date,1);
+		var nextDay = addDate(nowOrder.date,1);
 
 
-		var nowOrder=this.props.nowOrder.parked;
+		console.log('table:',nowOrder);
 		var carList = [];
-		if(nowOrder){
-			for(var i=0;i<nowOrder.length;i++){
-				var item = React.createElement(ParkingItem, {key: i, carId: nowOrder[i].carId, parkTimes: nowOrder[i].parkTimes, carType: this.props.carType, nowOrder: this.props.nowOrder})
+		if(nowOrder.parkingSpaces){
+			for(var i=0;i<nowOrder.parkingSpaces.length;i++){
+				var item = React.createElement(ParkingItem, {key: i, parkingSpaceId: nowOrder.parkingSpaces[i].parkingSpaceId, parkedTimes: nowOrder.parkingSpaces[i].parkedTimes, carType: nowOrder.carType, nowOrder: nowOrder})
 				carList.push(item);
 			}
 		}
@@ -316,31 +359,31 @@ module.exports = React.createClass({displayName: "exports",
 					  React.createElement("table", {className: "table table-bordered", id: "parkingTable"}, 
 					  	React.createElement("thead", null, 
 					  		React.createElement("tr", null, 
-					    		React.createElement("th", {colSpan: "17"}, "预约日期：", this.props.nowOrder.date), 
+					    		React.createElement("th", {colSpan: "17"}, "预约日期：", nowOrder.date), 
 					    		React.createElement("th", {colSpan: "2"}, nextDay)
 					    	)
 				    	), 
 					  	React.createElement("tbody", null, 
 					  		React.createElement("tr", null, 
-											  			React.createElement("th", null, this.props.carType), 
-											  			React.createElement("th", null, "8:00"), 
-											  			React.createElement("th", null, "9:00"), 
-											  			React.createElement("th", null, "10:00"), 
-											  			React.createElement("th", null, "11:00"), 
-											  			React.createElement("th", null, "12:00"), 
-											  			React.createElement("th", null, "14:00"), 
-											  			React.createElement("th", null, "15:00"), 
-											  			React.createElement("th", null, "16:00"), 
-											  			React.createElement("th", null, "17:00"), 
-											  			React.createElement("th", null, "18:00"), 
-											  			React.createElement("th", null, "19:00"), 
-											  			React.createElement("th", null, "20:00"), 
-											  			React.createElement("th", null, "21:00"), 
-											  			React.createElement("th", null, "22:00"), 
-											  			React.createElement("th", null, "23:00"), 
-											  			React.createElement("th", null, "00:00"), 
-											  			React.createElement("th", null, "01:00"), 
-											  			React.createElement("th", null, "02:00")
+								React.createElement("th", null, this.props.carType), 
+								React.createElement("th", null, "8:00"), 
+								React.createElement("th", null, "9:00"), 
+								React.createElement("th", null, "10:00"), 
+								React.createElement("th", null, "11:00"), 
+								React.createElement("th", null, "12:00"), 
+								React.createElement("th", null, "14:00"), 
+								React.createElement("th", null, "15:00"), 
+								React.createElement("th", null, "16:00"), 
+								React.createElement("th", null, "17:00"), 
+								React.createElement("th", null, "18:00"), 
+								React.createElement("th", null, "19:00"), 
+								React.createElement("th", null, "20:00"), 
+								React.createElement("th", null, "21:00"), 
+								React.createElement("th", null, "22:00"), 
+								React.createElement("th", null, "23:00"), 
+								React.createElement("th", null, "00:00"), 
+								React.createElement("th", null, "01:00"), 
+								React.createElement("th", null, "02:00")
 					  		), 
 
 					    	carList
