@@ -43,9 +43,7 @@ module.exports = React.createClass({
 		var cells = $(this.refs.items).find('td');
 
 		cells.removeClass('isSelecting');
-		if((id+carType-1)>18){//超过第二天2小时
-			selectState(false);
-		}else if(((id+carType-1)>5)&&(id<=5)){//中午跨时
+		if((id+carType-1)>42){//跨天
 			selectState(false);
 		}
 		else if(this.isOccupy(id,carType)){//占用已预约时间
@@ -85,10 +83,8 @@ module.exports = React.createClass({
 		var td = e.target;
 		var id = i;
 		var carType = this.state.carType;
-		if((id+carType-1)>18){//超过第二天2小时
-			alert('超过第二天2小时');
-		}else if(((id+carType-1)>5)&&(id<=5)){//中午跨时
-			alert('中午跨时');
+		if((id+carType-1)>42){//跨天
+			alert('跨天');
 		}
 		else if(this.isOccupy(id,carType)){//占用已预约时间
 			alert('该时段已经被预约。');
@@ -97,6 +93,10 @@ module.exports = React.createClass({
 			var newOrder={};
 			newOrder.date = this.props.nowOrder.date;
 			newOrder.parkingSpaceId = this.props.parkingSpaceId;
+			newOrder.linkMan = this.props.nowOrder.linkMan;
+			newOrder.linkNum = this.props.nowOrder.linkNum;
+			newOrder.carNum = this.props.nowOrder.carNum;
+			newOrder.carTypeId = this.props.nowOrder.carTypeId;
 			newOrder.parkedTimes = [];
 			for(var i=0;i<carType;i++){
 				newOrder.parkedTimes.push(id+i);
@@ -132,7 +132,7 @@ module.exports = React.createClass({
 	},
 	render:function(){
 		var cells = [];
-		for(var i=1;i<19;i++){
+		for(var i=1;i<43;i++){
 			cells.push(i);
 		}
 		return (

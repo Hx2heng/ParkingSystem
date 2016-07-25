@@ -37,31 +37,54 @@ module.exports = React.createClass({
 					  <table className="table table-bordered" id="parkingTable">
 					  	<thead>
 					  		<tr>
-					    		<th colSpan="17">预约日期：{nowOrder.date}</th>
-					    		<th colSpan="2">{nextDay}</th>
+					    		<th colSpan="43">预约日期：{nowOrder.date}</th>
 					    	</tr>
 				    	</thead>
 					  	<tbody>
 					  		<tr>
 								<th>{this.props.carType}</th>
-								<th>8:00</th>
+								<th>1:00</th>
+								<th>1:30</th>
+								<th>2:00</th>
+								<th>2:30</th>
+								<th>3:00</th>
+								<th>3:30</th>
+								<th>4:00</th>
+								<th>4:30</th>
+								<th>5:00</th>
+								<th>5:30</th>
+								<th>6:30</th>
+								<th>7:00</th>
+								<th>7:30</th>
+								<th>8:30</th>
 								<th>9:00</th>
+								<th>9:30</th>
 								<th>10:00</th>
+								<th>10:30</th>
 								<th>11:00</th>
-								<th>12:00</th>
+								<th>11:30</th>
+								<th>13:00</th>
+								<th>13:30</th>
 								<th>14:00</th>
+								<th>14:30</th>
 								<th>15:00</th>
+								<th>15:30</th>
 								<th>16:00</th>
+								<th>16:30</th>
 								<th>17:00</th>
 								<th>18:00</th>
+								<th>18:30</th>
 								<th>19:00</th>
+								<th>19:30</th>
 								<th>20:00</th>
+								<th>20:30</th>
 								<th>21:00</th>
+								<th>21:30</th>
 								<th>22:00</th>
+								<th>22:30</th>
 								<th>23:00</th>
+								<th>23:30</th>
 								<th>00:00</th>
-								<th>01:00</th>
-								<th>02:00</th>
 					  		</tr>
 
 					    	{carList}
