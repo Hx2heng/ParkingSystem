@@ -6,6 +6,7 @@ module.exports = React.createClass({
 	render:function(){
 		//申请单
 		var nowOrder=this.props.nowOrder;
+
 		//是否显示
 		var styleObj ={
 			display:this.props.isShow?'block':'none',
@@ -20,11 +21,11 @@ module.exports = React.createClass({
 		var nextDay = addDate(nowOrder.date,1);
 
 
-		console.log('table:',nowOrder);
+		
 		var carList = [];
 		if(nowOrder.parkingSpaces){
 			for(var i=0;i<nowOrder.parkingSpaces.length;i++){
-				var item = <ParkingItem key={i} parkingSpaceId={nowOrder.parkingSpaces[i].parkingSpaceId} parkedTimes={nowOrder.parkingSpaces[i].parkedTimes} carType={nowOrder.carType} nowOrder={nowOrder}/>
+				var item = <ParkingItem key={i} submit={this.props.submit} parkingType={nowOrder.parkingSpaces[i].parkingType} parkingSpaceId={nowOrder.parkingSpaces[i].parkingSpaceId} parkedTimes={nowOrder.parkingSpaces[i].parkedTimes} carType={this.props.carType} nowOrder={nowOrder}/>
 				carList.push(item);
 			}
 		}
@@ -37,12 +38,12 @@ module.exports = React.createClass({
 					  <table className="table table-bordered" id="parkingTable">
 					  	<thead>
 					  		<tr>
-					    		<th colSpan="43">预约日期：{nowOrder.date}</th>
+					    		<th colSpan="42">预约日期：{nowOrder.date}</th>
 					    	</tr>
 				    	</thead>
 					  	<tbody>
-					  		<tr>
-								<th>{this.props.carType}</th>
+					  		<tr ref="firstRow">
+								<th></th>
 								<th>1:00</th>
 								<th>1:30</th>
 								<th>2:00</th>
@@ -84,7 +85,6 @@ module.exports = React.createClass({
 								<th>22:30</th>
 								<th>23:00</th>
 								<th>23:30</th>
-								<th>00:00</th>
 					  		</tr>
 
 					    	{carList}

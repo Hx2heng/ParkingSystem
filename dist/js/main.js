@@ -2,6 +2,26 @@
 var React = require('react');
 
 module.exports = React.createClass({displayName: "exports",
+	getInitialState:function(){
+		var $this = this;
+	    return {
+	          getDay:function(){
+	          	//console.log($this.getDateStr(1));
+	          	return $this.getDateStr(1);
+	          }
+	    };
+	},
+	getDateStr:function(str){
+		 var dd = new Date();
+		 dd.setDate(dd.getDate()+str);//获取AddDayCount天后的日期
+		 var y = dd.getFullYear();
+		 var m = dd.getMonth()+1;//获取当前月份的日期
+		 var d = dd.getDate();
+		 m = m < 10? '0'+m:m;
+		 d = d < 10? '0'+d:d;
+		 return y+"-"+m+"-"+d;
+
+	},
 	render:function(){
 		return (
 			React.createElement("div", {className: "row"}, 
@@ -16,7 +36,7 @@ module.exports = React.createClass({displayName: "exports",
 				React.createElement("div", {className: "col-md-4 col-sm-4"}, 
 					React.createElement("div", {className: "form-group"}, 
 						React.createElement("label", {htmlFor: "carType"}, "车类型"), 
-						React.createElement("select", {className: "form-control", id: "carType", ref: "carType"}, 
+						React.createElement("select", {className: "form-control", id: "carType", ref: "carType", onChange: this.props.carTypeChange}, 
 						  React.createElement("option", {value: ""}), 
 						  
 						  	//console.log(this.props.carTypeList);
@@ -33,9 +53,9 @@ module.exports = React.createClass({displayName: "exports",
 				React.createElement("div", {className: "col-md-4 col-sm-4"}, 
 					React.createElement("div", {className: "form-group"}, 
 						React.createElement("label", {htmlFor: "date"}, "预约日期"), 
-						React.createElement("input", {ref: "date", type: "date", className: "form-control", id: "carDate"})
+						React.createElement("input", {ref: "date", type: "date", className: "form-control", min: this.state.getDay(), id: "carDate", onChange: this.props.dateChange})
 					), 
-					React.createElement("button", {type: "button", onClick: this.props.destineBtnClick, className: "btn btn-primary btn-lg btn-block"}, "查看车位")
+					React.createElement("button", {type: "button", onClick: this.props.destineBtnClick, className: "btn btn-danger btn-lg btn-block"}, "查看车位")
 				)
 			)
 
@@ -69,73 +89,85 @@ module.exports = React.createClass({displayName: "exports",
 		return {
 			isTableShow:false,
 			carTypeList:[],
+			carType:0,
 			nowOrder:{},//当前选择日期（天）的车位预定数据
 		}
 	},
 	componentDidMount:function(){
+		var $this = this;
 		var carTypeList=[
 			{id:1,value:1,txt:'大型车'},
 			{id:2,value:5,txt:'中形成'},
 			{id:3,value:3,txt:'你麻痹'}
 		];
-		this.setState({
+		$this.setState({
 			carTypeList:carTypeList
 		})
+		// $.ajax({
+		// 	url:'../basics/truckTypeComboFind',
+		// 	type:'post',
+		// 	data:'',
+		// 	success:function(res){
+		// 		$this.setState({
+		// 			carTypeList:res
+		// 		})
+		// 	}
+		// })
+		
 	},
 	destineBtnClick:function(){
-		var carNum = this.refs.inputArea.refs.carNum.value,
-			linkMan = this.refs.inputArea.refs.linkMan.value,
-			linkNum = this.refs.inputArea.refs.linkNum.value,
-			date = this.refs.inputArea.refs.date.value,
-			carTypeIndex = this.refs.inputArea.refs.carType.selectedIndex,
-			carType = this.refs.inputArea.refs.carType.options[carTypeIndex].value-0,
-			carTypeId = this.refs.inputArea.refs.carType.options[carTypeIndex].getAttribute("data-sId")-0;
+		var form = this.getFormContent();
 			
-			console.log(carTypeId);
-		var isOk = this.checkInputForm(carNum,linkMan,linkNum,date,carType);
+		var isOk = this.checkInputForm(form.carNum,form.linkMan,form.linkNum,form.date,form.carType);
 	 
 		var $this = this ;
 		if(isOk){
-			console.log('加载中');
-			var data ={
-				date:date,
-				carNum:carNum,
-			};
-			 // $.ajax({
-			  // 	url:'',
-			  // 	type:'post',
-			  // 	data:JSON.stringify(data),
-			  // 	success:function(res){
-			  // 		alert('成功');
-			  // 	}
-			  // })
-			var newOrder={
-				carNum:carNum,
-				linkMan:linkMan,
-				linkNum:linkNum,
-				date:date,
-				carType:carType,
-				carTypeId:carTypeId,
-				parkingSpaces:[
-					{parkingSpaceId:1,parkedTimes:[2,2,6,7,8,12],banTimes:[9,10]},
-					{parkingSpaceId:2,parkedTimes:[]},
-					{parkingSpaceId:3,parkedTimes:[1,2]},
-		 			{parkingSpaceId:4,parkedTimes:[3,4,8,12,13,14]},
-		 			{parkingSpaceId:5,parkedTimes:[2,6,12,13,17,18]},
-				]
-			};
+			// console.log('加载中');
+			//  $.ajax({
+			//   	url:'../basics/findCarportSchedule',
+			//   	type:'get',
+			//   	data:form.date,
+			//   	success:function(res){
+			//   		var newOrder = res;
+			//   		if(!$this.state.isTableShow){
+			//   			$this.setState({
+			//   				isTableShow:true,
+			//   				carType:form.carType,
+			//   				nowOrder:newOrder
+			//   			});
+			//   		}
+			//   		else{
+			//   			$this.setState({
+			//   				carType:form.carType,
+			//   				nowOrder:newOrder
+			//   			});
+			//   		}
+			//   		console.log('加载完成');
+			//   	}
+			//   })
+			
 
 			setTimeout(function(){
+				var newOrder={
+					date:form.date,
+					parkingSpaces:[
+						{parkingSpaceId:1,parkingType:1,parkedTimes:[2,2,6,7,8,12],banTimes:[9,10]},
+						{parkingSpaceId:2,parkingType:2,parkedTimes:[]},
+						{parkingSpaceId:3,parkingType:1,parkedTimes:[1,2]},
+				 		{parkingSpaceId:4,parkingType:3,parkedTimes:[3,4,8,12,13,14]},
+				 		{parkingSpaceId:5,parkingType:2,parkedTimes:[2,6,12,13,17,18]},
+					]
+				};
 				if(!$this.state.isTableShow){
 					$this.setState({
 						isTableShow:true,
-						carType:carType,
+						carType:form.carType,
 						nowOrder:newOrder
 					});
 				}
 				else{
 					$this.setState({
-						carType:carType,
+						carType:form.carType,
 						nowOrder:newOrder
 					});
 				}
@@ -151,8 +183,114 @@ module.exports = React.createClass({displayName: "exports",
 			});
 		}
 	},
-	checkInputForm:function(carNum,linkMan,linkNum,date,carType){
+	getFormContent:function(){
+		return {
+			carNum : this.refs.inputArea.refs.carNum.value,
+			linkMan : this.refs.inputArea.refs.linkMan.value,
+			linkNum : this.refs.inputArea.refs.linkNum.value,
+			date : this.refs.inputArea.refs.date.value,
+			carType : this.refs.inputArea.refs.carType.options[this.refs.inputArea.refs.carType.selectedIndex].value-0,
+			carTypeId : this.refs.inputArea.refs.carType.options[this.refs.inputArea.refs.carType.selectedIndex].getAttribute("data-sId")-0,
+			carTypeTxt : this.refs.inputArea.refs.carType.options[this.refs.inputArea.refs.carType.selectedIndex].innerHTML
+
+		};
+	},
+	carTypeChange:function(){
+		var carType = this.refs.inputArea.refs.carType.options[this.refs.inputArea.refs.carType.selectedIndex].value-0;
+		this.setState({
+			carType:carType
+		});
+	},
+	dateChange:function(){
+		if(!this.state.isTableShow){
+			return
+		}
+		var date = this.refs.inputArea.refs.date.value;
+		var $this = this;
+		$.ajax({
+		 	url:'../basics/findCarportSchedule',
+		 	type:'get',
+		 	data:date,
+		 	success:function(res){
+		 		var newOrder = res;
+		 		$this.setState({
+					nowOrder:newOrder
+				});
+		 		console.log('加载完成');
+		 	}
+		 })
 		
+
+		// setTimeout(function(){
+		// 		var newOrder={
+		// 			date:date,
+		// 			parkingSpaces:[
+		// 		 		{parkingSpaceId:1,parkedTimes:[2,6,12,13,17,18]},
+		// 				{parkingSpaceId:2,parkedTimes:[2,2,6,7,8,12],banTimes:[9,10]},
+		// 		 		{parkingSpaceId:3,parkedTimes:[3,4,8,12,13,14]},
+		// 				{parkingSpaceId:4,parkedTimes:[]},
+		// 				{parkingSpaceId:5,parkedTimes:[1,2]},
+		// 			]
+		// 		};
+		// 		$this.setState({
+		// 			nowOrder:newOrder
+		// 		});
+		// 	},200);
+
+	},
+	submit:function(order){
+		var  form = this.getFormContent();
+		var isOk = this.checkInputForm(form.carNum,form.linkMan,form.linkNum,form.date,form.carType);
+		if(isOk){
+			var newOrder = order;
+			var fTrList = this.refs['table'].refs['firstRow'].getElementsByTagName('th');	
+			var beginTimeTh = fTrList[newOrder.parkedTimes[0]];
+			var endTimeTh = fTrList[newOrder.parkedTimes[newOrder.parkedTimes.length-1]+1];
+			var beginTime = beginTimeTh.innerHTML;
+			var endTime = endTimeTh?endTimeTh.innerHTML:'00:00';
+			var r=confirm("确定预约此段时间吗？(时间："+newOrder.date+"车位："+newOrder.parkingSpaceId+"时间段："+beginTime+'~'+endTime);
+			if (r==true)
+			{
+				// newOrder.carNum = form.carNum;
+				// newOrder.linkMan = form.linkMan;
+				// newOrder.linkNum = form.linkNum;
+				// newOrder.carTypeId = form.carTypeId;
+				
+				var res ={"licenseNo":form.carNum,
+						  "linkman":form.linkMan,
+						  "linkphone":form.linkNum,
+						  "carport":newOrder.parkingSpaceId,
+						  "resDate":newOrder.date,
+						  "beginTime":newOrder.date+' '+beginTime,
+						  "endTime":newOrder.date+' '+endTime,
+						  "timeCode":newOrder.parkedTimes,
+						  "truckTypeId":form.carTypeId,
+						  "truckTypeName":form.carTypeTxt,
+						};
+			    console.log("You pressed OK!",res);
+			    append(res);
+			  //React.unmountComponentAtNode(  document.getElementById('app') );
+			  // $.ajax({
+			  // 	url:'',
+			  // 	type:'post',
+			  // 	data:JSON.stringify(newOrder),
+			  // 	success:function(res){
+			  // 		alert('成功');
+			  // 	}
+			  // })
+			}
+			else
+			{
+			 console.log("You pressed Cancel!")
+			}
+		}
+		else{
+			console.log('请完善表单');
+			return;
+		}
+		
+	},
+	checkInputForm:function(carNum,linkMan,linkNum,date,carType){
 		if(!this.carNumCheck(carNum)){
 			alert('车牌号格式错误');
 			return false
@@ -182,9 +320,9 @@ module.exports = React.createClass({displayName: "exports",
 				React.createElement("div", {className: "row"}, 
 					React.createElement("div", {className: "col-md-12"}, 
 						React.createElement("form", {className: "car-form"}, 
-							React.createElement(InputArea, {ref: "inputArea", destineBtnClick: this.destineBtnClick, carTypeList: this.state.carTypeList}), 
+							React.createElement(InputArea, {ref: "inputArea", destineBtnClick: this.destineBtnClick, carTypeList: this.state.carTypeList, carTypeChange: this.carTypeChange, dateChange: this.dateChange}), 
 
-							React.createElement(ParkingTable, {isShow: this.state.isTableShow, nowOrder: this.state.nowOrder})
+							React.createElement(ParkingTable, {ref: "table", isShow: this.state.isTableShow, nowOrder: this.state.nowOrder, carType: this.state.carType, submit: this.submit})
 						)
 					)
 				)
@@ -211,6 +349,7 @@ module.exports = React.createClass({displayName: "exports",
 			isSelecteds:isSelecteds,
 			carType:carType
 		});
+		this.setIsSelected(isSelecteds);
 	},
 	componentWillMount:function(){
 		var isSelecteds = this.props.parkedTimes;
@@ -219,17 +358,18 @@ module.exports = React.createClass({displayName: "exports",
 			isSelecteds:isSelecteds,
 			carType:carType
 		});
+		console.log(isSelecteds);
 	},
 	componentDidMount:function(){
 		this.setIsSelected(this.state.isSelecteds);
+
 	},
 	setIsSelected:function(cells){
-		
+		$(this.refs.items).find('td').removeClass('isSelected');
 		for(var i=0;i<cells.length;i++){
 			$(this.refs.items).find('td').eq(cells[i]-1).addClass('isSelected');
 		} 
 	},
-	empty:function(){},
 	mouseMove:function(i,e){
 		this.setSelectingCell(e,this.state.carType,i);
 	},
@@ -240,7 +380,7 @@ module.exports = React.createClass({displayName: "exports",
 		var cells = $(this.refs.items).find('td');
 
 		cells.removeClass('isSelecting');
-		if((id+carType-1)>42){//跨天
+		if((id+carType-1)>41){//跨天
 			selectState(false);
 		}
 		else if(this.isOccupy(id,carType)){//占用已预约时间
@@ -280,7 +420,7 @@ module.exports = React.createClass({displayName: "exports",
 		var td = e.target;
 		var id = i;
 		var carType = this.state.carType;
-		if((id+carType-1)>42){//跨天
+		if((id+carType-1)>41){//跨天
 			alert('跨天');
 		}
 		else if(this.isOccupy(id,carType)){//占用已预约时间
@@ -290,31 +430,13 @@ module.exports = React.createClass({displayName: "exports",
 			var newOrder={};
 			newOrder.date = this.props.nowOrder.date;
 			newOrder.parkingSpaceId = this.props.parkingSpaceId;
-			newOrder.linkMan = this.props.nowOrder.linkMan;
-			newOrder.linkNum = this.props.nowOrder.linkNum;
-			newOrder.carNum = this.props.nowOrder.carNum;
-			newOrder.carTypeId = this.props.nowOrder.carTypeId;
 			newOrder.parkedTimes = [];
 			for(var i=0;i<carType;i++){
 				newOrder.parkedTimes.push(id+i);
 			}
-			var r=confirm("确定预约此段时间吗？(时间："+newOrder.date+"车位："+newOrder.parkingSpaceId+"时间段："+newOrder.parkedTimes);
-			if (r==true)
-			{
-			  console.log("You pressed OK!",newOrder)
-			  // $.ajax({
-			  // 	url:'',
-			  // 	type:'post',
-			  // 	data:JSON.stringify(newOrder),
-			  // 	success:function(res){
-			  // 		alert('成功');
-			  // 	}
-			  // })
-			}
-			else
-			{
-			 console.log("You pressed Cancel!")
-			}
+
+			this.props.submit(newOrder);
+			
 			
 		}
 
@@ -329,12 +451,18 @@ module.exports = React.createClass({displayName: "exports",
 	},
 	render:function(){
 		var cells = [];
-		for(var i=1;i<43;i++){
+		for(var i=1;i<42;i++){
 			cells.push(i);
+		}
+		var typeDescribe = '';
+		switch(this.props.parkingType){
+			case 1:typeDescribe = '(大)'; break;
+			case 2:typeDescribe = '(中)'; break;
+			case 3:typeDescribe = '(小)'; break;
 		}
 		return (
 			React.createElement("tr", {ref: "items"}, 
-				React.createElement("th", null, "车位", this.props.parkingSpaceId), 
+				React.createElement("th", null, "车位", this.props.parkingSpaceId, typeDescribe), 
 				
 					cells.map(function(item,i){
 						if(this.isOneOfArray((i+1),this.state.isSelecteds)){
@@ -359,6 +487,7 @@ module.exports = React.createClass({displayName: "exports",
 	render:function(){
 		//申请单
 		var nowOrder=this.props.nowOrder;
+
 		//是否显示
 		var styleObj ={
 			display:this.props.isShow?'block':'none',
@@ -373,11 +502,11 @@ module.exports = React.createClass({displayName: "exports",
 		var nextDay = addDate(nowOrder.date,1);
 
 
-		console.log('table:',nowOrder);
+		
 		var carList = [];
 		if(nowOrder.parkingSpaces){
 			for(var i=0;i<nowOrder.parkingSpaces.length;i++){
-				var item = React.createElement(ParkingItem, {key: i, parkingSpaceId: nowOrder.parkingSpaces[i].parkingSpaceId, parkedTimes: nowOrder.parkingSpaces[i].parkedTimes, carType: nowOrder.carType, nowOrder: nowOrder})
+				var item = React.createElement(ParkingItem, {key: i, submit: this.props.submit, parkingType: nowOrder.parkingSpaces[i].parkingType, parkingSpaceId: nowOrder.parkingSpaces[i].parkingSpaceId, parkedTimes: nowOrder.parkingSpaces[i].parkedTimes, carType: this.props.carType, nowOrder: nowOrder})
 				carList.push(item);
 			}
 		}
@@ -390,12 +519,12 @@ module.exports = React.createClass({displayName: "exports",
 					  React.createElement("table", {className: "table table-bordered", id: "parkingTable"}, 
 					  	React.createElement("thead", null, 
 					  		React.createElement("tr", null, 
-					    		React.createElement("th", {colSpan: "43"}, "预约日期：", nowOrder.date)
+					    		React.createElement("th", {colSpan: "42"}, "预约日期：", nowOrder.date)
 					    	)
 				    	), 
 					  	React.createElement("tbody", null, 
-					  		React.createElement("tr", null, 
-								React.createElement("th", null, this.props.carType), 
+					  		React.createElement("tr", {ref: "firstRow"}, 
+								React.createElement("th", null), 
 								React.createElement("th", null, "1:00"), 
 								React.createElement("th", null, "1:30"), 
 								React.createElement("th", null, "2:00"), 
@@ -436,8 +565,7 @@ module.exports = React.createClass({displayName: "exports",
 								React.createElement("th", null, "22:00"), 
 								React.createElement("th", null, "22:30"), 
 								React.createElement("th", null, "23:00"), 
-								React.createElement("th", null, "23:30"), 
-								React.createElement("th", null, "00:00")
+								React.createElement("th", null, "23:30")
 					  		), 
 
 					    	carList
@@ -461,10 +589,13 @@ var mainCom = ReactDom.render(React.createElement(Parking, null),document.getEle
 },{"./components/ParkingComp.js":3,"react":178,"react-dom":9}],7:[function(require,module,exports){
 module.exports ={
 	carNumCheck:function(str){//车牌号验证
-      return /(^[\u4E00-\u9FA5]{1}[A-Z0-9]{6}$)|(^[A-Z]{2}[A-Z0-9]{2}[A-Z0-9\u4E00-\u9FA5]{1}[A-Z0-9]{4}$)|(^[\u4E00-\u9FA5]{1}[A-Z0-9]{5}[挂学警军港澳]{1}$)|(^[A-Z]{2}[0-9]{5}$)|(^(08|38){1}[A-Z0-9]{4}[A-Z0-9挂学警军港澳]{1}$)/.test(str);
+       return /(^[\u4E00-\u9FA5]{1}[A-Za-z0-9]{6}$)|(^[A-Za-z]{2}[A-Za-z0-9]{2}[A-Za-z0-9\u4E00-\u9FA5]{1}[A-Za-z0-9]{4}$)|(^[\u4E00-\u9FA5]{1}[A-Za-z0-9]{5}[挂学警军港澳]{1}$)|(^[A-Za-z]{2}[0-9]{5}$)|(^(08|38){1}[A-Za-z0-9]{4}[A-Za-z0-9挂学警军港澳]{1}$)/.test(str);
+
 	},
 	phoneNumCheck:function(str){//手机号码验证
-		return /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(str);
+		//return /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(str);
+		return /^1\d{10}$/.test(str);
+
 	},
 	trim:function(str){//字符串去空格
 		 return str.replace(/(^\s*)|(\s*$)/g, "");

@@ -14,6 +14,7 @@ module.exports = React.createClass({
 			isSelecteds:isSelecteds,
 			carType:carType
 		});
+		this.setIsSelected(isSelecteds);
 	},
 	componentWillMount:function(){
 		var isSelecteds = this.props.parkedTimes;
@@ -22,17 +23,18 @@ module.exports = React.createClass({
 			isSelecteds:isSelecteds,
 			carType:carType
 		});
+		console.log(isSelecteds);
 	},
 	componentDidMount:function(){
 		this.setIsSelected(this.state.isSelecteds);
+
 	},
 	setIsSelected:function(cells){
-		
+		$(this.refs.items).find('td').removeClass('isSelected');
 		for(var i=0;i<cells.length;i++){
 			$(this.refs.items).find('td').eq(cells[i]-1).addClass('isSelected');
 		} 
 	},
-	empty:function(){},
 	mouseMove:function(i,e){
 		this.setSelectingCell(e,this.state.carType,i);
 	},
@@ -43,7 +45,7 @@ module.exports = React.createClass({
 		var cells = $(this.refs.items).find('td');
 
 		cells.removeClass('isSelecting');
-		if((id+carType-1)>42){//跨天
+		if((id+carType-1)>41){//跨天
 			selectState(false);
 		}
 		else if(this.isOccupy(id,carType)){//占用已预约时间
@@ -83,7 +85,7 @@ module.exports = React.createClass({
 		var td = e.target;
 		var id = i;
 		var carType = this.state.carType;
-		if((id+carType-1)>42){//跨天
+		if((id+carType-1)>41){//跨天
 			alert('跨天');
 		}
 		else if(this.isOccupy(id,carType)){//占用已预约时间
@@ -93,31 +95,13 @@ module.exports = React.createClass({
 			var newOrder={};
 			newOrder.date = this.props.nowOrder.date;
 			newOrder.parkingSpaceId = this.props.parkingSpaceId;
-			newOrder.linkMan = this.props.nowOrder.linkMan;
-			newOrder.linkNum = this.props.nowOrder.linkNum;
-			newOrder.carNum = this.props.nowOrder.carNum;
-			newOrder.carTypeId = this.props.nowOrder.carTypeId;
 			newOrder.parkedTimes = [];
 			for(var i=0;i<carType;i++){
 				newOrder.parkedTimes.push(id+i);
 			}
-			var r=confirm("确定预约此段时间吗？(时间："+newOrder.date+"车位："+newOrder.parkingSpaceId+"时间段："+newOrder.parkedTimes);
-			if (r==true)
-			{
-			  console.log("You pressed OK!",newOrder)
-			  // $.ajax({
-			  // 	url:'',
-			  // 	type:'post',
-			  // 	data:JSON.stringify(newOrder),
-			  // 	success:function(res){
-			  // 		alert('成功');
-			  // 	}
-			  // })
-			}
-			else
-			{
-			 console.log("You pressed Cancel!")
-			}
+
+			this.props.submit(newOrder);
+			
 			
 		}
 
@@ -132,12 +116,18 @@ module.exports = React.createClass({
 	},
 	render:function(){
 		var cells = [];
-		for(var i=1;i<43;i++){
+		for(var i=1;i<42;i++){
 			cells.push(i);
+		}
+		var typeDescribe = '';
+		switch(this.props.parkingType){
+			case 1:typeDescribe = '(大)'; break;
+			case 2:typeDescribe = '(中)'; break;
+			case 3:typeDescribe = '(小)'; break;
 		}
 		return (
 			<tr ref="items">
-				<th>车位{this.props.parkingSpaceId}</th>
+				<th>车位{this.props.parkingSpaceId}{typeDescribe}</th>
 				{
 					cells.map(function(item,i){
 						if(this.isOneOfArray((i+1),this.state.isSelecteds)){
