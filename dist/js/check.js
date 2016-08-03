@@ -6,7 +6,7 @@ module.exports = React.createClass({displayName: "exports",
 		var $this = this;
 	    return {
 	          getDay:function(){
-	          	console.log($this.getDateStr(1));
+	          	//console.log($this.getDateStr(1));
 	          	return $this.getDateStr(1);
 	          }
 	    };
@@ -584,7 +584,7 @@ var React = require('react');
 var ReactDom = require('react-dom');
 var Parking = require('./components/ParkingComp.js');
 
-var mainCom = ReactDom.render(React.createElement(Parking, null),document.getElementById('app'))
+var mainCom = ReactDom.render(React.createElement(Parking, null),document.getElementById('app')) 
 
 },{"./components/ParkingComp.js":3,"react":178,"react-dom":9}],7:[function(require,module,exports){
 module.exports ={
